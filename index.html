@@ -1,0 +1,261 @@
+<!doctype html>
+<html lang="cs">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#f6f5f1">
+  <meta name="description" content="Osobní studijní plán pro více předmětů: krátké lekce, procvičování a knihovna dokončených témat.">
+  <title>Stepwise — uč se po předmětech</title>
+  <style>
+    :root {
+      --bg:#f6f5f1; --paper:#fff; --ink:#1d2923; --muted:#79847d; --line:#e8e9e4;
+      --green:#316b50; --green-dark:#25533d; --green-soft:#eaf3ec; --lime:#d9ef8f;
+      --peach:#f9e6d9; --orange:#cb704d; --blue-soft:#e8f0f4; --shadow:0 14px 38px rgba(41,57,46,.055);
+      --radius:21px;
+    }
+    *{box-sizing:border-box} html{scroll-behavior:smooth} body{margin:0;background:var(--bg);color:var(--ink);font:14px/1.5 Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}
+    button,input,select,textarea{font:inherit} button,a{-webkit-tap-highlight-color:transparent} a{color:inherit;text-decoration:none} button{cursor:pointer}
+    .app{min-height:100vh;display:grid;grid-template-columns:248px minmax(0,1fr)}
+    .sidebar{position:sticky;top:0;height:100vh;display:flex;flex-direction:column;padding:27px 17px 18px;background:#fff;border-right:1px solid var(--line)}
+    .brand{display:flex;align-items:center;gap:11px;padding:0 9px 29px;font-size:17px;font-weight:850;letter-spacing:-.05em}
+    .brand-mark{width:37px;height:37px;display:grid;place-items:center;background:var(--green);color:#fff;border-radius:12px;font-size:19px;letter-spacing:0}
+    .brand-name span{color:var(--green)}
+    .nav-label{padding:0 11px 9px;color:#a0a9a2;font-size:9px;letter-spacing:.12em;font-weight:850;text-transform:uppercase}
+    .nav{display:grid;gap:5px}
+    .nav-button{position:relative;width:100%;min-height:44px;display:flex;align-items:center;gap:11px;padding:0 11px;border:0;border-radius:12px;color:#6e7b72;background:transparent;text-align:left;font-size:12px;font-weight:700}
+    .nav-button:hover{background:#f7f8f4;color:var(--ink)} .nav-button.active{color:var(--green-dark);background:var(--green-soft)}
+    .nav-icon{width:21px;text-align:center;font-size:17px;opacity:.9}.nav-count{margin-left:auto;min-width:22px;padding:2px 6px;border-radius:9px;background:#fff;color:#768379;text-align:center;font-size:10px;font-weight:800}
+    .sidebar-spacer{flex:1}
+    .side-note{padding:16px;border:1px solid #e1ebdf;border-radius:16px;background:#f3f7f0}
+    .side-note-icon{width:29px;height:29px;display:grid;place-items:center;margin-bottom:10px;background:var(--lime);border-radius:9px;font-size:15px}
+    .side-note strong{display:block;font-size:12px}.side-note p{margin:5px 0 0;color:#77847a;font-size:10px;line-height:1.55}
+    .profile-mini{display:flex;align-items:center;gap:10px;margin-top:16px;padding:14px 8px 0;border-top:1px solid var(--line)}
+    .avatar{width:34px;height:34px;display:grid;place-items:center;border-radius:50%;background:var(--peach);color:#a45839;font-size:13px;font-weight:800}
+    .profile-mini strong{display:block;font-size:11px}.profile-mini span{display:block;color:#939d95;font-size:9px}
+    .main{min-width:0;padding:28px clamp(22px,4.3vw,62px) 50px}
+    .topline{display:flex;align-items:center;justify-content:space-between;gap:15px;margin:0 auto 29px;max-width:1120px}
+    .crumb{color:#89948c;font-size:11px}.crumb b{color:#4b5b51;font-weight:700}
+    .top-actions{display:flex;align-items:center;gap:10px}
+    .button{min-height:40px;display:inline-flex;align-items:center;justify-content:center;gap:8px;padding:0 14px;border:1px solid transparent;border-radius:11px;font-size:11px;font-weight:800;transition:.18s ease}
+    .button-primary{background:var(--green);color:white}.button-primary:hover{background:var(--green-dark);transform:translateY(-1px)}
+    .button-light{background:#fff;border-color:var(--line);color:#526258}.button-light:hover{background:#f8f9f6}
+    .button-soft{background:#eaf2e9;color:var(--green-dark)}.button-soft:hover{background:#deecde}
+    .button-quiet{border:0;background:transparent;color:#79877d;padding-left:6px;padding-right:6px}
+    .page{max-width:1120px;margin:0 auto}.view{display:none}.view.active{display:block;animation:appear .22s ease}@keyframes appear{from{opacity:.3;transform:translateY(5px)}to{opacity:1;transform:translateY(0)}}
+    .welcome{display:flex;align-items:flex-end;justify-content:space-between;gap:20px;margin-bottom:24px}
+    .overline{margin-bottom:7px;color:var(--green);font-size:9px;letter-spacing:.13em;font-weight:850;text-transform:uppercase}
+    h1,h2,h3,p{margin-top:0} h1{margin-bottom:5px;font-size:clamp(30px,4vw,43px);line-height:1.08;letter-spacing:-.06em;font-weight:820}
+    .welcome p{margin:9px 0 0;color:var(--muted);font-size:13px}
+    .streak{display:flex;align-items:center;gap:10px;padding:10px 14px;border:1px solid #eadfce;border-radius:14px;background:#fffaf1}
+    .streak-icon{width:32px;height:32px;display:grid;place-items:center;border-radius:10px;background:#fce6cb;font-size:16px}
+    .streak b{display:block;font-size:12px}.streak span{display:block;color:#958775;font-size:9px}
+    .stat-row{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:19px}
+    .stat{display:flex;align-items:center;gap:13px;padding:15px 17px;border:1px solid var(--line);border-radius:16px;background:#fff}
+    .stat-icon{width:37px;height:37px;display:grid;place-items:center;border-radius:12px;background:var(--green-soft);color:var(--green);font-size:17px}
+    .stat:nth-child(2) .stat-icon{background:#fcf0d9;color:#ad7b2b}.stat:nth-child(3) .stat-icon{background:var(--blue-soft);color:#557787}
+    .stat small{display:block;color:#8a958d;font-size:9px}.stat strong{display:block;margin-top:1px;font-size:17px;letter-spacing:-.04em}
+    .dashboard-grid{display:grid;grid-template-columns:minmax(0,1.45fr) minmax(260px,.8fr);gap:17px;align-items:stretch}
+    .panel{border:1px solid var(--line);border-radius:var(--radius);background:#fff;box-shadow:var(--shadow)}
+    .continue-panel{position:relative;min-height:265px;overflow:hidden;padding:25px 27px;background:#e9f1e8;border-color:#e0eadf}
+    .continue-panel:after{content:"A";position:absolute;right:16px;bottom:-67px;color:rgba(49,107,80,.055);font-size:280px;line-height:1;font-weight:900;letter-spacing:-.12em;pointer-events:none}
+    .lesson-chip{position:relative;z-index:1;display:inline-flex;align-items:center;gap:7px;padding:6px 9px;border:1px solid rgba(49,107,80,.13);border-radius:8px;color:var(--green);background:rgba(255,255,255,.5);font-size:9px;font-weight:850;letter-spacing:.08em;text-transform:uppercase}
+    .lesson-chip i{width:6px;height:6px;border-radius:50%;background:#80ab63}
+    .continue-panel h2{position:relative;z-index:1;max-width:440px;margin:17px 0 7px;font-size:clamp(24px,3vw,34px);line-height:1.08;letter-spacing:-.055em}
+    .continue-panel p{position:relative;z-index:1;max-width:390px;margin:0;color:#6f8174;font-size:12px}
+    .lesson-meta{position:relative;z-index:1;display:flex;gap:15px;margin-top:17px;color:#718277;font-size:10px;font-weight:700}
+    .continue-bottom{position:relative;z-index:1;display:flex;align-items:center;justify-content:space-between;gap:16px;margin-top:23px}
+    .avatar-stack{display:flex;align-items:center;color:#819086;font-size:10px}.avatars{display:flex;margin-right:8px}.avatars span{width:24px;height:24px;display:grid;place-items:center;margin-right:-6px;border:2px solid #e9f1e8;border-radius:50%;background:#faf9e9;font-size:10px}.avatars span:nth-child(2){background:#f9dfd0}.avatars span:nth-child(3){background:#dce8f0}
+    .progress-panel{padding:22px 21px}.panel-head{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:17px}.panel-head h3{margin:0;font-size:14px;letter-spacing:-.03em}.panel-head small{color:#9aa29c;font-size:9px}
+    .progress-ring-wrap{display:flex;align-items:center;gap:17px;padding:5px 1px 17px}.progress-ring{width:72px;height:72px;position:relative;flex:0 0 auto;display:grid;place-items:center;border-radius:50%;background:conic-gradient(var(--green) var(--progress,0%), #edf0eb 0)}
+    .progress-ring:before{content:"";position:absolute;inset:7px;border-radius:50%;background:#fff}.progress-ring strong{z-index:1;font-size:17px;letter-spacing:-.05em}.progress-copy b{display:block;font-size:12px}.progress-copy span{display:block;margin-top:4px;color:#87928a;font-size:10px;line-height:1.45}
+    .progress-bar{height:7px;overflow:hidden;border-radius:9px;background:#edf0eb}.progress-bar span{display:block;width:0;height:100%;border-radius:inherit;background:var(--green);transition:width .3s}
+    .progress-foot{display:flex;justify-content:space-between;margin-top:8px;color:#98a19a;font-size:9px}
+    .section-title-row{display:flex;align-items:center;justify-content:space-between;gap:15px;margin:28px 0 13px}.section-title-row h2{margin:0;font-size:16px;letter-spacing:-.04em}.section-title-row a{color:var(--green);font-size:10px;font-weight:800}
+    .topic-row{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+    .topic-card{min-height:144px;padding:16px;border:1px solid var(--line);border-radius:16px;background:#fff;transition:transform .16s,border-color .16s;cursor:pointer}
+    .topic-card:hover{transform:translateY(-2px);border-color:#bfd2c2}.topic-card-top{display:flex;align-items:center;justify-content:space-between;gap:9px}.topic-icon{width:32px;height:32px;display:grid;place-items:center;border-radius:10px;background:#f4ede3;font-size:14px}.topic-level{padding:4px 7px;border-radius:6px;background:#f2f5f1;color:#75827a;font-size:8px;font-weight:850}
+    .topic-card h3{margin:11px 0 3px;font-size:12px}.topic-card p{margin:0;color:#8a958d;font-size:10px}
+    .subject-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px}
+    .subject-card{min-height:132px;display:flex;flex-direction:column;align-items:flex-start;padding:16px;border:1px solid var(--line);border-radius:16px;background:#fff;text-align:left;transition:transform .16s,border-color .16s;cursor:pointer}
+    .subject-card:hover{transform:translateY(-2px);border-color:#bfd2c2}.subject-card-head{width:100%;display:flex;align-items:center;justify-content:space-between;gap:8px}
+    .subject-icon{width:34px;height:34px;display:grid;place-items:center;border-radius:11px;background:var(--green-soft);color:var(--green);font-size:14px;font-weight:850}
+    .subject-card:nth-child(2) .subject-icon{background:#fbeee1;color:#a56a42}.subject-card:nth-child(3) .subject-icon{background:#e9f0f5;color:#547487}.subject-card:nth-child(4) .subject-icon{background:#eeeafa;color:#71649a}
+    .subject-count{padding:4px 7px;border-radius:7px;background:#f3f5f1;color:#758279;font-size:8px;font-weight:800}
+    .subject-card h3{margin:12px 0 3px;font-size:12px;letter-spacing:-.02em}.subject-card p{margin:0;color:#8a958d;font-size:9px;line-height:1.45}
+    .subject-grid-page{grid-template-columns:repeat(3,minmax(0,1fr));gap:14px}.subject-grid-page .subject-card{min-height:160px;padding:19px}.subject-grid-page .subject-card h3{font-size:14px}
+    .subject-filters{display:flex;flex-wrap:wrap;gap:7px;margin:-3px 0 16px}.filter-chip{min-height:31px;padding:0 11px;border:1px solid var(--line);border-radius:99px;color:#68766d;background:#fff;font-size:9px;font-weight:750;cursor:pointer}.filter-chip.active{border-color:var(--green);color:#fff;background:var(--green)}
+    .empty-state{padding:25px;border:1px dashed #d7dfd6;border-radius:16px;color:#77847a;background:rgba(255,255,255,.58);text-align:center;font-size:12px}.empty-state strong{display:block;margin-bottom:5px;color:#46594c;font-size:13px}
+    .page-heading{display:flex;align-items:flex-end;justify-content:space-between;gap:20px;margin-bottom:21px}.page-heading h1{font-size:34px}.page-heading p{margin:8px 0 0;color:var(--muted);font-size:12px}
+    .toolbar{display:flex;align-items:center;gap:9px;margin-bottom:16px}.search{min-height:40px;flex:1;max-width:380px;padding:0 13px;border:1px solid var(--line);border-radius:11px;background:#fff;outline:0;font-size:11px}.search:focus{border-color:#8fb39a;box-shadow:0 0 0 3px rgba(49,107,80,.09)}
+    .library-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:13px}.library-card{padding:18px;border:1px solid var(--line);border-radius:17px;background:#fff}.library-card-head{display:flex;align-items:flex-start;justify-content:space-between;gap:12px}.library-card h3{margin:2px 0 5px;font-size:15px;letter-spacing:-.035em}.library-card p{margin:0;color:#7f8b82;font-size:10px}.done-label{padding:5px 8px;border-radius:8px;color:var(--green);background:var(--green-soft);font-size:8px;font-weight:850;white-space:nowrap}.library-card-bottom{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-top:15px;padding-top:12px;border-top:1px solid #eff1ed;color:#8a968d;font-size:9px}
+    .course-folder{grid-column:1/-1}.course-folder-head{display:flex;align-items:flex-end;justify-content:space-between;gap:12px;margin:8px 1px 10px}.course-folder-path{display:block;margin-bottom:4px;color:#9aa49d;font-size:8px;font-weight:850;letter-spacing:.1em;text-transform:uppercase}.course-folder-head h2{margin:0;color:#32483a;font-size:16px;letter-spacing:-.04em}.course-folder-items{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:13px}.course-folder-count{padding:5px 8px;border:1px solid var(--line);border-radius:8px;background:#fff;color:#829087;font-size:8px;font-weight:800;white-space:nowrap}
+    .lesson-header{padding:25px 27px;border:1px solid #e0eadf;border-radius:20px;background:#eaf2e9}.back-button{margin-bottom:16px;padding:0;border:0;color:#6b7e70;background:transparent;font-size:10px;font-weight:750}.lesson-header h1{font-size:36px}.lesson-header p{max-width:720px;margin:8px 0 0;color:#6e8073;font-size:12px}.lesson-header-meta{display:flex;gap:10px;margin-top:15px}.lesson-header-meta span{padding:6px 9px;border:1px solid rgba(49,107,80,.12);border-radius:8px;color:#54705d;background:rgba(255,255,255,.46);font-size:9px;font-weight:750}
+    .lesson-content{display:grid;grid-template-columns:minmax(0,1fr) 245px;align-items:start;gap:16px;margin-top:16px}.lesson-main{display:grid;gap:14px}.lesson-aside{position:sticky;top:20px;padding:19px}.lesson-aside h3{margin-bottom:12px;font-size:12px}.lesson-aside a{display:flex;gap:8px;padding:8px 0;color:#738078;font-size:10px}.lesson-aside a:hover{color:var(--green)}.aside-num{color:#adbaa9;font-weight:800}
+    .lesson-block{padding:21px 23px;border:1px solid var(--line);border-radius:17px;background:#fff}.lesson-block h2{margin:0 0 10px;font-size:17px;letter-spacing:-.04em}.lesson-block>p{margin:0;color:#748178;font-size:11px;line-height:1.7}
+    .rule-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:9px;margin-top:15px}.rule-card{padding:13px;border-radius:12px;background:#f6f8f4}.rule-card small{display:block;margin-bottom:6px;color:#89968b;font-size:9px;font-weight:750}.rule-card b{display:block;color:#315b40;font-size:12px}.rule-card span{display:block;margin-top:5px;color:#7b867e;font-size:9px;line-height:1.55}
+    .example-list{display:grid;gap:0;margin-top:5px}.example{display:grid;grid-template-columns:minmax(150px,1fr) minmax(150px,1fr) 120px;gap:12px;align-items:center;padding:11px 0;border-bottom:1px solid #eff1ed}.example:last-child{border-bottom:0}.example-main{font-size:11px;font-weight:800}.example-result{color:#707e74;font-size:10px}.example-note{justify-self:end;padding:4px 7px;border-radius:6px;color:#8d755c;background:#fbf2e7;font-size:8px;text-align:center}
+    .vocab-row{display:flex;flex-wrap:wrap;gap:8px;margin-top:14px}.vocab-card{min-width:105px;padding:11px 12px;border:1px solid #e8ece5;border-radius:11px;background:#f9faf7}.vocab-card b{display:block;font-size:11px}.vocab-card span{display:block;margin-top:3px;color:#7e8a80;font-size:9px}
+    .quiz-intro{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:13px}.quiz-progress{color:#89958c;font-size:9px;font-weight:750}.quiz-question{margin:0 0 13px;font-size:15px;font-weight:800;letter-spacing:-.025em}.quiz-options{display:grid;gap:7px}.quiz-option{width:100%;display:flex;align-items:center;gap:9px;padding:10px 11px;border:1px solid #e5e9e2;border-radius:10px;color:#4f5e53;background:#fff;text-align:left;font-size:10px;transition:.14s}.quiz-option:hover:not(:disabled){border-color:#97b49c;background:#f8fbf7}.quiz-option:disabled{cursor:default}.option-mark{width:22px;height:22px;display:grid;place-items:center;border-radius:7px;background:#f1f4ef;color:#7d8a80;font-size:9px;font-weight:800}.quiz-option.correct{border-color:#91b998;background:#edf6ee;color:#28583c}.quiz-option.correct .option-mark{color:#fff;background:#519265}.quiz-option.wrong{border-color:#e0ab91;background:#fff4ee;color:#95553c}.quiz-option.wrong .option-mark{color:#fff;background:#c67b5c}
+    .quiz-feedback{min-height:30px;margin-top:10px;color:#809086;font-size:10px;line-height:1.5}.quiz-feedback.good{color:#32734b}.quiz-feedback.try{color:#a35b3e}.quiz-controls{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-top:9px}.quiz-score{color:#718078;font-size:10px}.quiz-result{padding:14px;border-radius:12px;background:#f2f7f0}.quiz-result h3{margin:0 0 5px;font-size:14px}.quiz-result p{margin:0;color:#708073;font-size:10px}
+    .completion-banner{display:flex;align-items:center;justify-content:space-between;gap:15px;padding:17px;border:1px solid #d5e7d7;border-radius:15px;background:#f0f7ee}.completion-banner strong{display:block;font-size:12px}.completion-banner span{display:block;margin-top:3px;color:#738378;font-size:10px}
+    .modal-backdrop{position:fixed;inset:0;z-index:20;display:none;align-items:center;justify-content:center;padding:18px;background:rgba(25,38,29,.34);backdrop-filter:blur(4px)}.modal-backdrop.open{display:flex}.modal{width:min(470px,100%);padding:23px;border:1px solid #e8eae4;border-radius:20px;background:#fff;box-shadow:0 25px 80px rgba(14,30,18,.2);animation:appear .18s ease}.modal-top{display:flex;align-items:flex-start;justify-content:space-between;gap:12px}.modal h2{margin:0;font-size:21px;letter-spacing:-.05em}.modal p{margin:7px 0 17px;color:#77837a;font-size:11px;line-height:1.6}.modal-close{width:30px;height:30px;border:0;border-radius:9px;color:#77837a;background:#f2f4f0;font-size:17px}.form-label{display:block;margin:12px 0 6px;color:#56655a;font-size:10px;font-weight:800}.modal input,.modal select,.modal textarea{width:100%;min-height:41px;padding:10px 11px;border:1px solid #e1e6df;border-radius:10px;outline:0;background:#fcfdfa;font-size:11px}.modal textarea{min-height:75px;resize:vertical}.modal input:focus,.modal select:focus,.modal textarea:focus{border-color:#92b29a}.modal-actions{display:flex;justify-content:flex-end;gap:8px;margin-top:17px}.modal-hint{margin-top:13px;padding:10px 11px;border-radius:10px;color:#718078;background:#f3f6f1;font-size:9px;line-height:1.55}
+    .toast{position:fixed;left:50%;bottom:24px;z-index:30;max-width:calc(100% - 32px);transform:translate(-50%,18px);opacity:0;pointer-events:none;padding:11px 15px;border-radius:11px;color:#fff;background:#284c36;box-shadow:0 7px 24px rgba(17,31,20,.2);font-size:10px;font-weight:700;transition:.22s}.toast.show{transform:translate(-50%,0);opacity:1}
+    .file-input{display:none}
+    @media(max-width:970px){.app{grid-template-columns:218px minmax(0,1fr)}.main{padding-left:27px;padding-right:27px}.dashboard-grid{grid-template-columns:1fr}.progress-panel{display:grid;grid-template-columns:1fr 1fr;align-items:center;gap:12px}.progress-panel .panel-head{margin:0}.progress-ring-wrap{padding:0}.progress-bar,.progress-foot{grid-column:2}.lesson-content{grid-template-columns:minmax(0,1fr) 205px}}
+    @media(max-width:740px){.app{display:block}.sidebar{position:relative;height:auto;padding:12px 16px 10px;border-right:0;border-bottom:1px solid var(--line)}.brand{padding:0 2px 10px}.side-note,.profile-mini,.nav-label,.sidebar-spacer{display:none}.nav{display:flex;overflow:auto;gap:4px}.nav-button{width:auto;flex:0 0 auto;min-height:37px;padding:0 10px;font-size:10px}.nav-icon{font-size:14px}.nav-count{display:none}.main{padding:21px 17px 37px}.topline{margin-bottom:21px}.top-actions .button{min-height:36px;padding:0 10px;font-size:10px}.lesson-content{grid-template-columns:1fr}.lesson-aside{position:static;order:-1;display:flex;align-items:center;gap:8px;overflow:auto;padding:8px 11px}.lesson-aside h3{display:none}.lesson-aside a{flex:0 0 auto;padding:7px}.lesson-aside .aside-num{display:none}}
+    @media(max-width:540px){.topline{align-items:flex-start}.crumb{max-width:130px;line-height:1.5}.top-actions{gap:5px}.top-actions .button{font-size:0;gap:0}.top-actions .button span{font-size:15px}.welcome{display:block}.streak{width:max-content;margin-top:15px}.stat-row{gap:7px}.stat{display:block;padding:11px}.stat-icon{width:30px;height:30px;margin-bottom:8px;font-size:14px}.stat small{font-size:8px}.stat strong{font-size:14px}.continue-panel{padding:20px;min-height:260px}.continue-panel h2{font-size:26px}.continue-bottom{align-items:flex-start;flex-direction:column}.progress-panel{display:block}.progress-ring-wrap{padding:5px 0 15px}.progress-bar,.progress-foot{grid-column:auto}.topic-row,.library-grid,.subject-grid,.subject-grid-page{grid-template-columns:1fr 1fr}.course-folder-items{grid-template-columns:1fr}.topic-card{min-height:139px;padding:13px}.subject-card,.subject-grid-page .subject-card{min-height:138px;padding:13px}.page-heading{display:block}.page-heading h1{font-size:29px}.page-heading>.button{margin-top:13px}.toolbar{flex-wrap:wrap}.search{max-width:none;flex-basis:100%}.lesson-header{padding:20px}.lesson-header h1{font-size:30px}.lesson-block{padding:17px}.rule-grid{grid-template-columns:1fr}.example{grid-template-columns:1fr 1fr;gap:5px 10px}.example-note{grid-column:1/-1;justify-self:start}.lesson-header-meta{flex-wrap:wrap}.completion-banner{align-items:flex-start;flex-direction:column}}
+  </style>
+</head>
+<body>
+  <div class="app">
+    <aside class="sidebar">
+      <a class="brand" href="#home" onclick="showView('home');return false"><span class="brand-mark">S</span><span class="brand-name">STEP<span>WISE</span></span></a>
+      <div class="nav-label">MOJE STUDIUM</div>
+      <nav class="nav" aria-label="Navigace">
+        <button class="nav-button active" data-view-link="home" onclick="showView('home')"><span class="nav-icon">◷</span>Učím se</button>
+        <button class="nav-button" data-view-link="subjects" onclick="showView('subjects')"><span class="nav-icon">▦</span>Předměty</button>
+        <button class="nav-button" data-view-link="library" onclick="showView('library')"><span class="nav-icon">▤</span>Knihovna <span class="nav-count" id="library-count">0</span></button>
+        <button class="nav-button" data-view-link="topics" onclick="showView('topics')"><span class="nav-icon">◫</span>Všechna témata</button>
+      </nav>
+      <div class="sidebar-spacer"></div>
+      <div class="side-note"><div class="side-note-icon">✦</div><strong>Jedna lekce po druhé</strong><p>Krátké pravidelné procvičování je lepší než mnoho témat za jeden večer.</p></div>
+      <div class="profile-mini"><div class="avatar">J</div><div><strong>Moje studium</strong><span>Více předmětů</span></div></div>
+    </aside>
+
+    <main class="main">
+      <div class="topline">
+        <div class="crumb"><b id="crumb-title">MŮJ PŘEHLED</b><span id="crumb-tail"></span></div>
+        <div class="top-actions">
+          <button class="button button-light" onclick="openTopicModal()"><span>＋</span> Přidat téma</button>
+          <button class="button button-primary" onclick="continueLearning()"><span>▶</span> Pokračovat</button>
+        </div>
+      </div>
+
+      <div class="page">
+        <section class="view active" id="view-home">
+          <div class="welcome"><div><div class="overline">STUDIUM · KROK ZA KROKEM</div><h1>Ahoj! Čemu se dnes budeme věnovat?</h1><p>Uč se po menších tématech v různých předmětech a ukládej si, co už umíš.</p></div><div class="streak"><div class="streak-icon">☀</div><div><b>Dnes je dobrý den</b><span>Na jednu lekci stačí 10 minut</span></div></div></div>
+          <div class="stat-row">
+            <div class="stat"><div class="stat-icon">◷</div><div><small>Lekce k učení</small><strong id="active-count">1</strong></div></div>
+            <div class="stat"><div class="stat-icon">✓</div><div><small>Dokončené lekce</small><strong id="done-count">0</strong></div></div>
+            <div class="stat"><div class="stat-icon">↗</div><div><small>Předměty v plánu</small><strong id="subject-count">1</strong></div></div>
+          </div>
+          <div class="dashboard-grid">
+            <article class="panel continue-panel" id="continue-panel"></article>
+            <article class="panel progress-panel">
+              <div class="panel-head"><h3>Můj pokrok</h3><small id="library-subtitle">dokončeno: 0</small></div>
+              <div class="progress-ring-wrap"><div class="progress-ring" id="progress-ring"><strong id="progress-percent">0%</strong></div><div class="progress-copy"><b id="progress-heading">Začátek cesty</b><span id="progress-copy">Dokonči první lekci — uloží se do knihovny.</span></div></div>
+              <div class="progress-bar"><span id="progress-bar"></span></div><div class="progress-foot"><span>Dokončené lekce</span><span id="progress-foot">0 z 1</span></div>
+            </article>
+          </div>
+          <div class="section-title-row"><h2>Moje předměty</h2><a href="#subjects" onclick="showView('subjects');return false">Přehled předmětů →</a></div>
+          <div class="subject-grid" id="home-subjects"></div>
+        </section>
+
+        <section class="view" id="view-library">
+          <div class="page-heading"><div><div class="overline">MOJE DOKONČENÉ LEKCE</div><h1>Knihovna</h1><p>Dokončená témata zůstávají tady. Otevři si kterékoli a zopakuj si ho.</p></div><button class="button button-light" onclick="exportBackup()">↓ Stáhnout zálohu</button></div>
+          <div class="toolbar"><input id="library-search" class="search" type="search" placeholder="Hledat téma nebo předmět…" oninput="renderLibrary()"><label class="button button-light" for="backup-file">↑ Nahrát zálohu</label><input class="file-input" id="backup-file" type="file" accept="application/json" onchange="importBackup(event)"></div>
+          <div class="subject-filters" id="library-filters"></div>
+          <div class="library-grid" id="library-grid"></div>
+        </section>
+
+        <section class="view" id="view-subjects">
+          <div class="page-heading"><div><div class="overline">VÍCE PŘEDMĚTŮ · JEDNO MÍSTO</div><h1>Moje předměty</h1><p>Vyber předmět a zobraz si jeho lekce. Nové přidáme postupně podle toho, co právě potřebuješ.</p></div><button class="button button-primary" onclick="openTopicModal()">＋ Přidat lekci</button></div>
+          <div class="subject-grid subject-grid-page" id="subject-grid"></div>
+        </section>
+
+        <section class="view" id="view-topics">
+          <div class="page-heading"><div><div class="overline">TVŮJ SEZNAM LEKCÍ</div><h1>Všechna témata</h1><p>Najdeš tu nové lekce i témata, kterými už jsi prošel.</p></div><button class="button button-primary" onclick="openTopicModal()">＋ Přidat téma</button></div>
+          <div class="toolbar"><input id="topics-search" class="search" type="search" placeholder="Hledat téma…" oninput="renderTopics()"></div>
+          <div class="subject-filters" id="topic-filters"></div>
+          <div class="library-grid" id="topics-grid"></div>
+        </section>
+
+        <section class="view" id="view-lesson"><div id="lesson-mount"></div></section>
+      </div>
+    </main>
+  </div>
+
+  <div class="modal-backdrop" id="topic-modal" onclick="if(event.target===this)closeTopicModal()">
+    <div class="modal" role="dialog" aria-modal="true" aria-labelledby="modal-title">
+      <div class="modal-top"><div><h2 id="modal-title">Přidat novou lekci</h2><p>Napiš předmět a téma — připravím lekci a zařadím ji do tvého plánu.</p></div><button class="modal-close" onclick="closeTopicModal()" aria-label="Zavřít">×</button></div>
+      <label class="form-label" for="topic-subject">Předmět</label><select id="topic-subject" onchange="toggleCustomSubject()"><option value="" disabled selected>Vyber předmět</option><option value="Angličtina">Angličtina</option><option value="Čeština">Čeština</option><option value="Matematika">Matematika</option><option value="Stavební materiály">Stavební materiály</option><option value="Jiný předmět">Jiný předmět</option></select>
+      <div id="custom-subject-wrap" style="display:none"><label class="form-label" for="custom-subject">Název předmětu</label><input id="custom-subject" placeholder="Například: Fyzika"></div>
+      <label class="form-label" for="topic-name">Téma lekce</label><input id="topic-name" placeholder="Například: Past Simple, procenta, základy domu">
+      <label class="form-label" for="topic-level">Úroveň nebo ročník</label><input id="topic-level" placeholder="Například: A1, 1. ročník, základy">
+      <label class="form-label" for="topic-goal">Co se chceš naučit?</label><textarea id="topic-goal" placeholder="Například: rozumět výpočtu plochy místnosti"></textarea>
+      <div class="modal-actions"><button class="button button-light" onclick="closeTopicModal()">Zavřít</button><button class="button button-primary" onclick="copyLessonRequest()">Zkopírovat zadání ↗</button></div>
+      <div class="modal-hint">Web funguje bez externího účtu. Napiš mi téma přímo do chatu — přidám hotovou lekci do seznamu. Dokončené lekce se při aktualizaci zachovají.</div>
+    </div>
+  </div>
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+  <script src="lessons.js"></script>
+  <script>
+    const STORAGE_KEY='stepwise-learning-progress-v1';
+    const SUBJECT_CATALOG=[
+      {id:'english',name:'Angličtina',icon:'A',note:'Slovní zásoba, gramatika a komunikace'},
+      {id:'czech',name:'Čeština',icon:'Č',note:'Jazyk, literatura a sloh'},
+      {id:'math',name:'Matematika',icon:'∑',note:'Postupy, příklady a vzorce'},
+      {id:'construction',name:'Stavební materiály',icon:'▧',note:'Vlastnosti, struktura a použití materiálů'},
+      {id:'other',name:'Další předměty',icon:'＋',note:'Přidej si vlastní předmět'}
+    ];
+    let state=loadState(), currentLessonId=null, quizIndex=0, quizAnswered=false, quizScore=0, quizResults=[], toastTimer=null, topicSubjectFilter='all', librarySubjectFilter='all';
+    const $=id=>document.getElementById(id);
+    function loadState(){try{return JSON.parse(localStorage.getItem(STORAGE_KEY))||{completed:{},lastLessonId:null}}catch(e){return{completed:{},lastLessonId:null}}}
+    function saveState(){try{localStorage.setItem(STORAGE_KEY,JSON.stringify(state))}catch(e){showToast('Pokrok se nepodařilo uložit. Stáhni si zálohu.')}}
+    function lessonById(id){return window.LESSONS.find(l=>l.id===id)}
+    function subjectIdFor(l){return l.subjectId||({'Angličtina':'english','Čeština':'czech','Matematika':'math','Stavební materiály':'construction','Pozemní stavitelství':'construction'}[l.subject]||slugify(l.subject||'other'))}
+    function slugify(value){return String(value).normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'')||'other'}
+    function subjects(){const items=[...SUBJECT_CATALOG];const known=new Set(items.map(s=>s.id));window.LESSONS.forEach(l=>{const id=subjectIdFor(l);if(!known.has(id)){items.push({id,name:l.subject||'Další předmět',icon:'✦',note:'Vlastní studijní předmět'});known.add(id)}});return items}
+    function subjectLessonCount(id){return window.LESSONS.filter(l=>subjectIdFor(l)===id).length}
+    function lessonCountLabel(count){const lastTwo=count%100,last=count%10;return count+' '+(last===1&&lastTwo!==11?'lekce':last>=2&&last<=4&&(lastTwo<12||lastTwo>14)?'lekce':'lekcí')}
+    function subjectCard(s){const count=subjectLessonCount(s.id);return `<button type="button" class="subject-card" onclick="openSubject('${escapeHtml(s.id)}')"><span class="subject-card-head"><span class="subject-icon">${escapeHtml(s.icon)}</span><span class="subject-count">${count?lessonCountLabel(count):'PŘIDAT'}</span></span><h3>${escapeHtml(s.name)}</h3><p>${count?s.note:'Zatím bez lekcí · přidat téma'}</p></button>`}
+    function renderSubjects(target){const mount=$(target);if(mount)mount.innerHTML=subjects().map(subjectCard).join('')}
+    function openSubject(id){const subject=subjects().find(s=>s.id===id);if(!subject)return;if(subjectLessonCount(id)){topicSubjectFilter=id;showView('topics')}else{openTopicModal(subject.id==='other'?'Jiný předmět':subject.name)}}
+    function setTopicFilter(id){topicSubjectFilter=id;renderTopics()}
+    function doneCount(){return Object.keys(state.completed||{}).filter(id=>lessonById(id)).length}
+    function activeLessons(){return window.LESSONS.filter(l=>!state.completed[l.id])}
+    function showView(name){document.querySelectorAll('.view').forEach(v=>v.classList.remove('active'));const view=$('view-'+name);if(view)view.classList.add('active');document.querySelectorAll('[data-view-link]').forEach(b=>b.classList.toggle('active',b.dataset.viewLink===name));const labels={home:'MŮJ PŘEHLED',subjects:'PŘEDMĚTY',library:'KNIHOVNA',topics:'VŠECHNA TÉMATA',lesson:'LEKCE'};$('crumb-title').textContent=labels[name]||'MŮJ PŘEHLED';$('crumb-tail').textContent=name==='lesson'&&currentLessonId?' / '+lessonById(currentLessonId).title:'';if(name==='home')renderHome();if(name==='subjects')renderSubjects('subject-grid');if(name==='library')renderLibrary();if(name==='topics')renderTopics();window.scrollTo({top:0,behavior:'smooth'})}
+    function renderHome(){
+      const lessons=window.LESSONS, active=activeLessons(), next=active.find(l=>l.id===state.lastLessonId)||active[0]||lessons[0], done=doneCount(), total=lessons.length, pct=total?Math.round(done/total*100):0;
+      $('active-count').textContent=active.length;$('done-count').textContent=done;$('subject-count').textContent=new Set(lessons.map(subjectIdFor)).size;$('library-count').textContent=done;
+      $('progress-percent').textContent=pct+'%';$('progress-ring').style.setProperty('--progress',pct+'%');$('progress-bar').style.width=pct+'%';$('progress-foot').textContent=done+' z '+total;
+      $('progress-heading').textContent=done===0?'Začínáme':done===total?'Skvělá práce!':'Už máš něco za sebou';$('progress-copy').textContent=done===0?'Dokonči první lekci — uloží se do knihovny.':done===total?'Všechna přidaná témata máš hotová. Požádej o novou lekci.':'Dokončená témata najdeš ve své knihovně.';
+      if(next&&active.length){$('continue-panel').innerHTML=`<span class="lesson-chip"><i></i>${escapeHtml(next.subject||'PŘEDMĚT')} · DALŠÍ LEKCE</span><h2>${escapeHtml(next.title)}</h2><p>${escapeHtml(next.goal)}</p><div class="lesson-meta"><span>◷ &nbsp;${next.minutes} minut</span><span>◎ &nbsp;${escapeHtml(next.level||'Procvičování')}</span></div><div class="continue-bottom"><div class="avatar-stack"><div class="avatars"><span>✦</span><span>✓</span><span>↗</span></div><span>${escapeHtml(next.subtitle)}</span></div><button class="button button-primary" onclick="openLesson('${next.id}')">Začít lekci <span>→</span></button></div>`;$('library-subtitle').textContent='dokončeno: '+done}else{$('continue-panel').innerHTML='<span class="lesson-chip"><i></i>VŠECHNO HOTOVO</span><h2>Jsi připraven na nové téma?</h2><p>Napiš mi do chatu, co se chceš naučit, a přidám novou lekci do správného předmětu.</p><div class="continue-bottom"><div class="avatar-stack">✦ &nbsp; Skvělé tempo</div><button class="button button-primary" onclick="openTopicModal()">＋ Nová lekce</button></div>'; $('library-subtitle').textContent='dokončeno: '+done}
+      renderSubjects('home-subjects');
+    }
+    function topicCard(l,i){const icons=['✎','◈','⌁','◇'];return `<article class="topic-card" onclick="openLesson('${l.id}')"><div class="topic-card-top"><span class="topic-icon">${icons[i%icons.length]}</span><span class="topic-level">${escapeHtml(l.level)}</span></div><h3>${escapeHtml(l.title)}</h3><p>${escapeHtml(l.subtitle)}</p></article>`}
+    function collectionFor(l){return l.collection||l.subject||'Další témata'}
+    function sourceFolderFor(l){return l.sourceFolder||'Moje témata'}
+    function groupLessons(list,renderCard){const groups=new Map();list.forEach(l=>{const key=sourceFolderFor(l)+'||'+collectionFor(l);if(!groups.has(key))groups.set(key,[]);groups.get(key).push(l)});return [...groups.entries()].map(([key,items])=>{const [folder,name]=key.split('||');return `<section class="course-folder"><div class="course-folder-head"><div><span class="course-folder-path">${escapeHtml(folder)}</span><h2>${escapeHtml(name)}</h2></div><span class="course-folder-count">${lessonCountLabel(items.length)}</span></div><div class="course-folder-items">${items.map(renderCard).join('')}</div></section>`}).join('')}
+    function renderLibrary(){const query=($('library-search').value||'').trim().toLowerCase();const completed=window.LESSONS.filter(l=>state.completed[l.id]);const available=subjects().filter(s=>completed.some(l=>subjectIdFor(l)===s.id));$('library-filters').innerHTML=[{id:'all',name:'Všechny předměty'},...available].map(s=>`<button class="filter-chip ${librarySubjectFilter===s.id?'active':''}" onclick="setLibraryFilter('${s.id}')">${escapeHtml(s.name)}</button>`).join('');const list=completed.filter(l=>(librarySubjectFilter==='all'||subjectIdFor(l)===librarySubjectFilter)&&`${l.subject} ${l.title} ${l.subtitle} ${collectionFor(l)} ${sourceFolderFor(l)}`.toLowerCase().includes(query));$('library-grid').innerHTML=list.length?groupLessons(list,l=>`<article class="library-card"><div class="library-card-head"><div><h3>${escapeHtml(l.title)}</h3><p>${escapeHtml(l.subject||'Další předmět')} · ${escapeHtml(l.subtitle)}</p></div><span class="done-label">✓ DOKONČENO</span></div><div class="library-card-bottom"><span>${state.completed[l.id].date?`Dokončeno ${escapeHtml(state.completed[l.id].date)}`:'Uloženo v knihovně'} · ${escapeHtml(l.level||'Lekce')}</span><button class="button button-soft" onclick="openLesson('${l.id}')">Zopakovat →</button></div></article>`):`<div class="empty-state" style="grid-column:1/-1"><strong>${completed.length||query?'Nic jsme nenašli':'Tady se objeví dokončené lekce'}</strong>${completed.length||query?'Zkus změnit předmět nebo hledaný výraz.':'Dokonči libovolnou lekci a uloží se do knihovny.'}</div>`}
+    function setLibraryFilter(id){librarySubjectFilter=id;renderLibrary()}
+    function renderTopics(){const query=($('topics-search').value||'').trim().toLowerCase();const available=subjects().filter(s=>subjectLessonCount(s.id)>0);$('topic-filters').innerHTML=[{id:'all',name:'Všechny předměty'},...available].map(s=>`<button class="filter-chip ${topicSubjectFilter===s.id?'active':''}" onclick="setTopicFilter('${s.id}')">${escapeHtml(s.name)}</button>`).join('');const list=window.LESSONS.filter(l=>(topicSubjectFilter==='all'||subjectIdFor(l)===topicSubjectFilter)&&`${l.subject} ${l.title} ${l.subtitle} ${l.level||''} ${collectionFor(l)} ${sourceFolderFor(l)}`.toLowerCase().includes(query));$('topics-grid').innerHTML=list.length?groupLessons(list,l=>{const done=state.completed[l.id];return `<article class="library-card"><div class="library-card-head"><div><h3>${escapeHtml(l.title)}</h3><p>${escapeHtml(l.subject||'Další předmět')} · ${escapeHtml(l.goal)}</p></div><span class="${done?'done-label':'topic-level'}">${done?'✓ DOKONČENO':escapeHtml(l.level||'LEKCE')}</span></div><div class="library-card-bottom"><span>◷ ${l.minutes} minut · ${escapeHtml(l.subtitle)}</span><button class="button ${done?'button-light':'button-soft'}" onclick="openLesson('${l.id}')">${done?'Zopakovat':'Začít'} →</button></div></article>`}):'<div class="empty-state" style="grid-column:1/-1"><strong>V tomto předmětu zatím nejsou lekce</strong>Napiš mi, jaké téma potřebuješ, a přidám ho sem.</div>'}
+    function openLesson(id){const lesson=lessonById(id);if(!lesson)return;currentLessonId=id;state.lastLessonId=id;saveState();quizIndex=0;quizAnswered=false;quizScore=0;quizResults=[];renderLesson(lesson);showView('lesson')}
+    function renderLesson(l){
+      const done=state.completed[l.id];
+      $('lesson-mount').innerHTML=`<button class="back-button" onclick="showView('${done?'library':'topics'}')">← &nbsp; ${done?'Do knihovny':'Ke všem tématům'}</button><header class="lesson-header"><span class="lesson-chip"><i></i>${escapeHtml(l.subject||'PŘEDMĚT').toUpperCase()} · ${done?'V KNIHOVNĚ':escapeHtml(l.level||'LEKCE')}</span><h1>${escapeHtml(l.title)}</h1><p>${escapeHtml(l.goal)}</p><div class="lesson-header-meta"><span>◷ ${l.minutes} minut</span><span>◎ ${escapeHtml(l.level||'Procvičování')}</span><span>✦ ${escapeHtml(l.subtitle)}</span></div></header>${done?`<div class="completion-banner" style="margin-top:14px"><div><strong>Toto téma je uložené v knihovně</strong><span>Dokončenou lekci si můžeš kdykoli zopakovat.</span></div><span class="done-label">✓ DOKONČENO</span></div>`:''}<div class="lesson-content"><div class="lesson-main"><section class="lesson-block" id="rule"><h2>1. Vysvětlení</h2><p>${escapeHtml(l.ruleIntro)}</p><div class="rule-grid">${l.rules.map(r=>`<article class="rule-card"><small>${escapeHtml(r.label)}</small><b>${escapeHtml(r.pattern)}</b><span>${escapeHtml(r.detail)}</span></article>`).join('')}</div></section><section class="lesson-block" id="examples"><h2>2. Příklady</h2><p>Nejdřív zkus příkladu porozumět sám a potom si přečti řešení nebo překlad.</p><div class="example-list">${l.examples.map(x=>`<div class="example"><span class="example-main">${escapeHtml(x.content)}</span><span class="example-result">${escapeHtml(x.result)}</span><span class="example-note">${escapeHtml(x.note)}</span></div>`).join('')}</div></section><section class="lesson-block" id="vocabulary"><h2>3. Klíčové pojmy</h2><p>Zapamatuj si důležité pojmy a jejich vysvětlení.</p><div class="vocab-row">${l.vocabulary.map(x=>`<div class="vocab-card"><b>${escapeHtml(x.term)}</b><span>${escapeHtml(x.explanation)}</span></div>`).join('')}</div></section><section class="lesson-block" id="practice"><div class="quiz-intro"><div><h2 style="margin-bottom:3px">4. Procvičování</h2><p style="margin:0">Vyber jednu odpověď. Test můžeš zkusit znovu.</p></div><span class="quiz-progress" id="quiz-progress"></span></div><div id="quiz-mount"></div></section><div id="lesson-finish"></div></div><aside class="panel lesson-aside"><h3>Obsah lekce</h3><a href="#rule"><span class="aside-num">01</span>Vysvětlení</a><a href="#examples"><span class="aside-num">02</span>Příklady</a><a href="#vocabulary"><span class="aside-num">03</span>Pojmy</a><a href="#practice"><span class="aside-num">04</span>Procvičování</a></aside></div>`;
+      renderQuiz(l);
+    }
+    function renderQuiz(l){const mount=$('quiz-mount');if(!mount)return;const total=l.quiz.length;if(quizIndex>=total){const passed=quizScore>=Math.ceil(total*.7),alreadyDone=Boolean(state.completed[l.id]);$('quiz-progress').textContent='Výsledek';mount.innerHTML=`<div class="quiz-result"><h3>${passed?'Skvěle, téma máš zvládnuté!':'Dobrá práce — zkusíme to ještě jednou'}</h3><p>Správné odpovědi: ${quizScore} z ${total}. ${alreadyDone?'Téma už máš uložené v knihovně.':passed?'Lekci můžeš uložit do knihovny.':'Pro dokončení potřebuješ alespoň 70 %.'}</p></div><div class="quiz-controls"><span class="quiz-score">${Math.round(quizScore/total*100)} % správně</span><button class="button ${passed&&!alreadyDone?'button-primary':'button-light'}" onclick="${alreadyDone?'restartQuiz()':passed?'completeLesson()':'restartQuiz()'}">${alreadyDone?'Zopakovat test ↻':passed?'Dokončit lekci ✓':'Zkusit test znovu ↻'}</button></div>`;return}
+      const q=l.quiz[quizIndex];$('quiz-progress').textContent=`Otázka ${quizIndex+1} z ${total}`;mount.innerHTML=`<p class="quiz-question">${escapeHtml(q.question)}</p><div class="quiz-options">${q.options.map((o,i)=>`<button class="quiz-option" ${quizAnswered?'disabled':''} onclick="answerQuestion(${i})"><span class="option-mark">${String.fromCharCode(65+i)}</span>${escapeHtml(o)}</button>`).join('')}</div><div class="quiz-feedback ${quizAnswered?(quizResults[quizIndex]?'good':'try'):''}" id="quiz-feedback">${quizAnswered?escapeHtml(q.explain):'Vyber odpověď a hned se dozvíš, proč je správná.'}</div><div class="quiz-controls"><span class="quiz-score">Správně: ${quizScore}</span>${quizAnswered?`<button class="button button-primary" onclick="nextQuestion()">${quizIndex===total-1?'Výsledek':'Další otázka'} →</button>`:''}</div>`;
+      if(quizAnswered){mount.querySelectorAll('.quiz-option').forEach((button,i)=>{if(i===q.answer)button.classList.add('correct')});const selected=mount.querySelectorAll('.quiz-option')[window._chosenAnswer];if(selected&&window._chosenAnswer!==q.answer)selected.classList.add('wrong')}
+    }
+    function answerQuestion(index){if(quizAnswered)return;const l=lessonById(currentLessonId),q=l.quiz[quizIndex];quizAnswered=true;window._chosenAnswer=index;quizResults[quizIndex]=index===q.answer;if(index===q.answer)quizScore++;renderQuiz(l)}
+    function nextQuestion(){quizIndex++;quizAnswered=false;window._chosenAnswer=undefined;renderQuiz(lessonById(currentLessonId))}
+    function restartQuiz(){quizIndex=0;quizAnswered=false;quizScore=0;quizResults=[];renderQuiz(lessonById(currentLessonId))}
+    function completeLesson(){const l=lessonById(currentLessonId);state.completed[l.id]={score:quizScore,date:new Intl.DateTimeFormat('cs-CZ',{day:'numeric',month:'short',year:'numeric'}).format(new Date())};saveState();$('library-count').textContent=doneCount();renderLesson(l);showToast('Lekce je uložená v knihovně. Skvělá práce!');}
+    function continueLearning(){const active=activeLessons();const target=active.find(l=>l.id===state.lastLessonId)||active[0];if(target)openLesson(target.id);else openTopicModal()}
+    function escapeHtml(value){return String(value??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
+    function showToast(message){const toast=$('toast');toast.textContent=message;toast.classList.add('show');clearTimeout(toastTimer);toastTimer=setTimeout(()=>toast.classList.remove('show'),3000)}
+    function openTopicModal(subjectName=''){$('topic-modal').classList.add('open');const select=$('topic-subject'),custom=$('custom-subject');if(!subjectName){select.value='';custom.value=''}else if([...select.options].some(option=>option.value===subjectName)){select.value=subjectName;custom.value=''}else{select.value='Jiný předmět';custom.value=subjectName==='Jiný předmět'?'':subjectName}toggleCustomSubject();setTimeout(()=>$('topic-subject').focus(),30)}
+    function toggleCustomSubject(){const custom=$('topic-subject').value==='Jiný předmět';$('custom-subject-wrap').style.display=custom?'block':'none'}
+    function closeTopicModal(){$('topic-modal').classList.remove('open')}
+    async function copyLessonRequest(){const topic=$('topic-name').value.trim();if(!topic){$('topic-name').focus();showToast('Nejdřív napiš téma lekce.');return}let subject=$('topic-subject').value;if(!subject){$('topic-subject').focus();showToast('Vyber předmět.');return}if(subject==='Jiný předmět'){subject=$('custom-subject').value.trim();if(!subject){$('custom-subject').focus();showToast('Napiš název předmětu.');return}}const level=$('topic-level').value.trim()||'podle tématu',goal=$('topic-goal').value.trim();const prompt=`Přidej na můj web Stepwise novou lekci pro předmět „${subject}“ na téma „${topic}“. Úroveň nebo ročník: ${level}.${goal?' Můj cíl: '+goal+'.':''} Připrav srozumitelné vysvětlení v češtině, příklady, klíčové pojmy a krátké procvičování s odpověďmi. Zařaď lekci do správného předmětu a zachovej předchozí lekce i můj uložený pokrok.`;try{await navigator.clipboard.writeText(prompt);showToast('Zadání je zkopírované. Pošli mi ho v chatu.')}catch(e){showToast(prompt)}closeTopicModal()}
+    function exportBackup(){const blob=new Blob([JSON.stringify({format:'stepwise-backup-v1',exportedAt:new Date().toISOString(),state},null,2)],{type:'application/json'});const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='stepwise-progress.json';a.click();setTimeout(()=>URL.revokeObjectURL(a.href),1000);showToast('Záloha pokroku byla stažena.')}
+    function importBackup(event){const file=event.target.files[0];if(!file)return;const reader=new FileReader();reader.onload=()=>{try{const data=JSON.parse(reader.result);const restored=data.state||data;if(!restored.completed||typeof restored.completed!=='object')throw new Error('invalid');state={completed:{...state.completed,...restored.completed},lastLessonId:restored.lastLessonId||state.lastLessonId};saveState();renderLibrary();renderHome();showToast('Záloha byla nahrána. Pokrok byl sloučen.')}catch(e){showToast('Tuto zálohu se nepodařilo načíst.')}event.target.value=''};reader.readAsText(file)}
+    document.addEventListener('keydown',e=>{if(e.key==='Escape')closeTopicModal()});
+    renderHome();
+  </script>
+</body>
+</html>
